@@ -29,7 +29,7 @@
 
 G_BEGIN_DECLS
 
-#define GTK_TYPE_HEXA	        (gtk_hexa_get_type ())
+#define GTK_TYPE_HEXA	    (gtk_hexa_get_type ())
 #define GTK_HEXA(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_HEXA, GtkHexa))
 #define GTK_HEXA_CLASS(obj)	(G_TYPE_CHECK_CLASS_CAST ((obj), GTK_HEXA, GtkHexaClass))
 #define IS_GTK_HEXA(obj)	(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_HEXA))
