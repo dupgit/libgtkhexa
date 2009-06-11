@@ -1,26 +1,26 @@
 AUTOMAKE_OPTIONS = gnu
 
-SUBDIRS = src doc po
+SUBDIRS = src tests doc po
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libhexgtk.pc
+pkgconfig_DATA = libgtkhexa.pc
 $(pkgconfig_DATA): config.status
 
 INTLTOOL_FILES =            \
-	intltool-extract.in \
-	intltool-merge.in   \
+	intltool-extract.in 	\
+	intltool-merge.in   	\
 	intltool-update.in
 
 M4_FILES =              \
-	m4/codeset.m4   \
-	m4/gettext.m4   \
-	m4/glibc21.m4   \
-	m4/iconv.m4     \
-	m4/isc-posix.m4 \
-	m4/lcmessage.m4 \
+	m4/codeset.m4   	\
+	m4/gettext.m4   	\
+	m4/glibc21.m4   	\
+	m4/iconv.m4     	\
+	m4/isc-posix.m4 	\
+	m4/lcmessage.m4 	\
 	m4/progtest.m4
 
-DISTCLEANFILE =                   \
+DISTCLEANFILE =               \
 	intltool-extract          \
 	intltool-merge            \
 	intltool-update           \
@@ -30,6 +30,6 @@ EXTRA_DIST = 			\
 	$(INTLTOOL_FILES)	\
 	$(M4_FILES) 		\
 	libgtkhexa.pc		\
-	autogen.sh		\
+	autogen.sh			\
 	autoclean.sh		\
 	HISTORY

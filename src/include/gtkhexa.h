@@ -4,7 +4,7 @@
  * A GTK+ Widgets that implements an hexadecimal view of a particular
  * file (as GtkHex)
  *
- * (C) Copyright 2007 Olivier Delhomme
+ * (C) Copyright 2007-2009 Olivier Delhomme
  * e-mail : heraia@delhomme.org
  * URL    : http://heraia.tuxfamily.org
  *
@@ -29,26 +29,26 @@
 
 G_BEGIN_DECLS
 
-#define GTK_TYPE_HEXA	    (gtk_hexa_get_type ())
-#define GTK_HEXA(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_HEXA, GtkHexa))
-#define GTK_HEXA_CLASS(obj)	(G_TYPE_CHECK_CLASS_CAST ((obj), GTK_HEXA, GtkHexaClass))
-#define IS_GTK_HEXA(obj)	(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_HEXA))
+#define GTK_TYPE_HEXA	    	(gtk_hexa_get_type ())
+#define GTK_HEXA(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_HEXA, GtkHexa))
+#define GTK_HEXA_CLASS(obj)		(G_TYPE_CHECK_CLASS_CAST ((obj), GTK_HEXA, GtkHexaClass))
+#define IS_GTK_HEXA(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_HEXA))
 #define IS_GTK_HEXA_CLASS(obj)	(G_TYPE_CHECK_CLASS_TYPE ((obj), GTK_TYPE_HEXA))
-#define GTK_HEXA_GET_CLASS	(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_HEXA, GtkHexaClass))
+#define GTK_HEXA_GET_CLASS		(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_HEXA, GtkHexaClass))
 
-typedef struct _GtkHexa		GtkHexa;
+typedef struct _GtkHexa			GtkHexa;
 typedef struct _GtkHexaClass	GtkHexaClass;
 
 struct _GtkHexa
 {
-	GtkDrawingArea parent;
+	GtkWidget parent;
 
 	/* < private > */
 };
 
 struct _GtkHexaClass
 {
-	GtkDrawingAreaClass parent_class;
+	GtkWidgetClass parent_class;
 };
 
 GtkWidget *gtk_hexa_new (void);

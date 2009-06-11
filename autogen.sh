@@ -1,8 +1,8 @@
 #! /bin/sh
 
-aclocal-1.9 \
-&& libtoolize \
-&& automake-1.9 --gnu --add-missing -a -c \
+aclocal                                     \
+&& libtoolize                               \
+&& automake --gnu --add-missing -a -c       \
 && autoconf
 glib-gettextize --copy --force 
 intltoolize --copy --force --automake

@@ -1,11 +1,11 @@
 prefix=/usr/local
 exec_prefix=${prefix}
-libdir=${exec_prefix}/lib/hexgtk
-includedir=${prefix}/include/hexgtk
+libdir=${exec_prefix}/lib/gtkhexa
+includedir=${prefix}/include/gtkhexa
 
 Name: libhexgtk
-Description: Hex Gtk Library
+Description: Gtk Hexa Library
 Version: 0.0.1
 Requires: gtk+-2.0 glib-2.0 cairo
-Libs: -L${libdir} -lhexgtk
+Libs: -L${libdir} -lgtkhexa
 Cflags: -I${includedir}/

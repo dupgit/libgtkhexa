@@ -3,7 +3,7 @@
  * gtkhexa.c
  * 
  * 
- * (C) Copyright 2007 Olivier Delhomme
+ * (C) Copyright 2007-2009 Olivier Delhomme
  * e-mail : heraia@delhomme.org
  * URL    : http://heraia.tuxfamily.org
  *
@@ -28,8 +28,7 @@ G_DEFINE_TYPE (GtkHexa, gtk_hexa, GTK_TYPE_DRAWING_AREA);
 
 static gboolean gtk_hexa_expose (GtkWidget *clock, GdkEventExpose *event);
 
-static void
-gtk_hexa_class_init (GtkHexaClass *class)
+static void gtk_hexa_class_init (GtkHexaClass *class)
 {
 	GtkWidgetClass *widget_class;
 
@@ -37,19 +36,16 @@ gtk_hexa_class_init (GtkHexaClass *class)
 	widget_class->expose_event = gtk_hexa_expose;
 }
 
-static void
-gtk_hexa_init (GtkHexa *hexa)
+static void gtk_hexa_init (GtkHexa *hexa)
 {
 }
 
-static gboolean
-gtk_hexa_expose (GtkWidget *hexa, GdkEventExpose *event)
+static gboolean gtk_hexa_expose (GtkWidget *hexa, GdkEventExpose *event)
 {
 	return FALSE;
 }
 
-GtkWidget *
-gtk_hexa_new (void)
+GtkWidget *gtk_hexa_new (void)
 {
 	return g_object_new (GTK_TYPE_HEXA, NULL);
 }

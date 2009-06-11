@@ -5,7 +5,6 @@ AC_INIT([LIBGTKHEXA], [0.0.1],
         [libgtkhexa])
 AC_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE([$PACKAGE_TARNAME], [$PACKAGE_VERSION])
-#AC_LIBTOOL_WIN32_DLL
 
 dnl directory requirement
 TOP_DIR=`pwd`
@@ -17,10 +16,14 @@ dnl Libraries requirements
 GLIB2_VERSION=2.10.0
 GTK2_VERSION=2.10.0
 CAIRO_VERSION=1.4.0
+LIBGLADE_VERSION=1.110.0
+GMODULE_VERSION=2.0.0
 
 AC_SUBST(GLIB2_VERSION)
 AC_SUBST(GTK2_VERSION)
 AC_SUBST(CAIRO_VERSION)
+AC_SUBST(LIBGLADE_VERSION)
+AC_SUBST(GMODULE_VERSION)
 
 AM_MAINTAINER_MODE
 
@@ -113,6 +116,16 @@ dnl checking for cairo
 dnl *******************************
 PKG_CHECK_MODULES(CAIRO,[cairo >= $CAIRO_VERSION])
 
+dnl **************************************************
+dnl * checking for libglade                          *
+dnl **************************************************
+PKG_CHECK_MODULES(LIBGLADE, [libglade-2.0 >= $LIBGLADE_VERSION])
+
+dnl **************************************************
+dnl * checking for gmodule                           *
+dnl **************************************************
+PKG_CHECK_MODULES(GMODULE, [gmodule-2.0 >= $GMODULE_VERSION])
+
 AC_PROG_INSTALL
 
 CFLAGS="$CFLAGS -Wall -Wstrict-prototypes -Wmissing-declarations \
@@ -151,7 +164,6 @@ else
  AC_DEFINE_UNQUOTED(PROGRAM_DEBUG,FALSE,[Debug mode Off])
 fi
 
-
 AC_SUBST(LDFLAGS)
 AC_SUBST(CFLAGS)
 AC_SUBST(GLIB2_CFLAGS)
@@ -160,8 +172,12 @@ AC_SUBST(GTK2_CFLAGS)
 AC_SUBST(GTK2_LIBS)
 AC_SUBST(CAIRO_CFLAGS)
 AC_SUBST(CAIRO_LIBS)
+AC_SUBST(LIBGLADE_CFLAGS)
+AC_SUBST(LIBGLADE_LIBS)
+AC_SUBST(GMODULE_CFLAGS)
+AC_SUBST(GMODULE_LIBS)
 
-AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile po/Makefile.in])
+AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile po/Makefile.in])
 AC_OUTPUT
 
 echo
