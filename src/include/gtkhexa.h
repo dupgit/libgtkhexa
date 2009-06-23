@@ -22,19 +22,25 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
  */
-#ifndef _GTKHEXA_H_
-#define _GTKHEXA_H_
+#ifndef __GTKHEXA_H_
+#define __GTKHEXA_H_
 
+#include <glib.h>
 #include <gtk/gtk.h>
+#include <gtk/gtkwidget.h>
 
 G_BEGIN_DECLS
 
 #define GTK_TYPE_HEXA	    	(gtk_hexa_get_type ())
 #define GTK_HEXA(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_HEXA, GtkHexa))
-#define GTK_HEXA_CLASS(obj)		(G_TYPE_CHECK_CLASS_CAST ((obj), GTK_HEXA, GtkHexaClass))
 #define IS_GTK_HEXA(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_HEXA))
+
+#define GTK_HEXA_CLASS(obj)		(G_TYPE_CHECK_CLASS_CAST ((obj), GTK_HEXA, GtkHexaClass))
 #define IS_GTK_HEXA_CLASS(obj)	(G_TYPE_CHECK_CLASS_TYPE ((obj), GTK_TYPE_HEXA))
 #define GTK_HEXA_GET_CLASS		(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_HEXA, GtkHexaClass))
+
+#define GTK_HEXA_DEFAULT_WIDTH 200
+#define GTK_HEXA_DEFAULT_HEIGHT 300
 
 typedef struct _GtkHexa			GtkHexa;
 typedef struct _GtkHexaClass	GtkHexaClass;
@@ -51,9 +57,13 @@ struct _GtkHexaClass
 	GtkWidgetClass parent_class;
 };
 
+
+GType gtk_hexa_get_type (void);
 GtkWidget *gtk_hexa_new (void);
+
+
 
 G_END_DECLS
 
 
-#endif /* _GTKHEXA_H_ */
+#endif /* __GTKHEXA_H_ */
