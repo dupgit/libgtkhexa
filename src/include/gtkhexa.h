@@ -49,6 +49,10 @@ struct _GtkHexa
 {
 	GtkWidget parent;
 
+	GtkAdjustment *adjustment;
+	gboolean adjustement_changed; /** to know that something has changed */
+	guint policy : 2;             /** update policy (GTK_UPDATE_[CONTINUOUS/DELAYED/DISCONTINUOUS]) */
+  
 	/* < private > */
 };
 
@@ -60,6 +64,8 @@ struct _GtkHexaClass
 
 GType gtk_hexa_get_type (void);
 GtkWidget *gtk_hexa_new (void);
+GtkAdjustment *gtk_hexa_get_adjustment(GtkHexa *hexa);
+void gtk_hexa_set_update_policy(GtkHexa *hexa, GtkUpdateType policy);
 
 
 

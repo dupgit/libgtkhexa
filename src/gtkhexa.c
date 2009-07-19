@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
  */
 /** @file gtkhexa.c
- *  Heavly inspired by GtkTextView
+ *  Inspired by GtkTextView and GtkDial example
  */
 
 #include "gtkhexa.h"
@@ -31,14 +31,16 @@ G_DEFINE_TYPE (GtkHexa, gtk_hexa, GTK_TYPE_WIDGET);
 
 static void gtk_hexa_class_init(GtkHexaClass *class);
 static void gtk_hexa_init(GtkHexa *hexa);
-static void gtk_hexa_paint(GtkWidget *widget);
+static void gtk_hexa_paint(GtkWidget *widget, GdkRectangle *area);
 static gboolean gtk_hexa_expose(GtkWidget *hexa, GdkEventExpose *event);
 static void gtk_hexa_finalize(GObject *object);
 static void gtk_hexa_destroy(GtkObject *object);
 static void gtk_hexa_realize(GtkWidget *widget);
 static void gtk_hexa_size_request(GtkWidget *widget, GtkRequisition *requisition);
 static void gtk_hexa_size_allocate(GtkWidget *widget, GtkAllocation *allocation);
-
+static void gtk_hexa_update (GtkHexa *hexa);
+static void gtk_hexa_adjustment_changed(GtkAdjustment *adjustment, gpointer data);
+static void gtk_hexa_adjustment_value_changed(GtkAdjustment *adjustment, gpointer data);
 
 /**
  * Class initialisation
@@ -52,9 +54,10 @@ static void gtk_hexa_class_init(GtkHexaClass *class)
 	object_class->destroy = gtk_hexa_destroy;
     gobject_class->finalize = gtk_hexa_finalize;
 
-	widget_class = GTK_WIDGET_CLASS (class);
-	widget_class->expose_event = gtk_hexa_expose;
+	widget_class = GTK_WIDGET_CLASS(class);
+	
 	widget_class->realize = gtk_hexa_realize;
+	widget_class->expose_event = gtk_hexa_expose;
 	widget_class->size_request = gtk_hexa_size_request;
 	widget_class->size_allocate = gtk_hexa_size_allocate;
 }
@@ -64,18 +67,121 @@ static void gtk_hexa_class_init(GtkHexaClass *class)
  */
 static void gtk_hexa_init(GtkHexa *hexa)
 {
+	hexa->adjustment = (GtkAdjustment*) gtk_adjustment_new(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 }
 
 static void gtk_hexa_finalize(GObject *object)
 {
-	 G_OBJECT_CLASS (gtk_hexa_parent_class)->finalize (object);
+	 G_OBJECT_CLASS(gtk_hexa_parent_class)->finalize (object);
 }
 
 static void gtk_hexa_destroy(GtkObject *object)
 {
-	  GTK_OBJECT_CLASS (gtk_hexa_parent_class)->destroy (object);
+	  GTK_OBJECT_CLASS(gtk_hexa_parent_class)->destroy (object);
 }
 
+
+/**
+ * Adjustement stuff
+ */
+GtkAdjustment *gtk_hexa_get_adjustment(GtkHexa *hexa)
+{
+  g_return_val_if_fail(hexa != NULL, NULL);
+  g_return_val_if_fail(IS_GTK_HEXA(hexa), NULL);
+
+  return hexa->adjustment;
+}
+
+void gtk_hexa_set_update_policy(GtkHexa *hexa, GtkUpdateType policy)
+{
+  g_return_if_fail(hexa != NULL);
+  g_return_if_fail(IS_GTK_HEXA(hexa));
+
+  hexa->policy = policy;
+}
+
+void gtk_hexa_set_adjustment (GtkHexa *hexa, GtkAdjustment *adjustment)
+{
+  g_return_if_fail(hexa != NULL);
+  g_return_if_fail(IS_GTK_HEXA (hexa));
+
+  if (hexa->adjustment)
+    {
+      gtk_signal_disconnect_by_data(GTK_OBJECT (hexa->adjustment), (gpointer) hexa);
+      gtk_object_unref(GTK_OBJECT (hexa->adjustment));
+    }
+
+  hexa->adjustment = adjustment;
+  gtk_object_ref(GTK_OBJECT (hexa->adjustment));
+
+  gtk_signal_connect(GTK_OBJECT(adjustment), "changed", (GtkSignalFunc) gtk_hexa_adjustment_changed, (gpointer) hexa);
+  gtk_signal_connect(GTK_OBJECT(adjustment), "value_changed", (GtkSignalFunc) gtk_hexa_adjustment_value_changed, (gpointer) hexa);
+
+  hexa->adjustement_changed = TRUE;
+
+  gtk_hexa_update(hexa);
+}
+
+static void gtk_hexa_update (GtkHexa *hexa)
+{
+  gfloat new_value = 0.0;
+  
+  g_return_if_fail(hexa != NULL);
+  g_return_if_fail(IS_GTK_HEXA(hexa));
+
+  new_value = hexa->adjustment->value;
+  
+  if (new_value < hexa->adjustment->lower)
+    new_value = hexa->adjustment->lower;
+
+  if (new_value > hexa->adjustment->upper)
+    new_value = hexa->adjustment->upper;
+
+  if (new_value != hexa->adjustment->value)
+    {
+      hexa->adjustment->value = new_value;
+      gtk_signal_emit_by_name(GTK_OBJECT(hexa->adjustment), "value_changed");
+    }
+
+  gtk_widget_draw(GTK_WIDGET(hexa), NULL);
+}
+
+static void gtk_hexa_adjustment_changed(GtkAdjustment *adjustment, gpointer data)
+{
+  GtkHexa *hexa;
+
+  g_return_if_fail(adjustment != NULL);
+  g_return_if_fail(data != NULL);
+
+  hexa = GTK_HEXA(data);
+
+  if (hexa->adjustement_changed == TRUE)
+	{
+		gtk_hexa_update(hexa);
+		hexa->adjustement_changed = FALSE;
+    }
+}
+
+static void gtk_hexa_adjustment_value_changed(GtkAdjustment *adjustment, gpointer data)
+{
+  GtkHexa *hexa;
+
+  g_return_if_fail(adjustment != NULL);
+  g_return_if_fail(data != NULL);
+
+  hexa = GTK_HEXA(data);
+
+  if (hexa->adjustement_changed == TRUE)
+    {
+      gtk_hexa_update (hexa);
+      hexa->adjustement_changed = FALSE;
+    }
+}
+
+/**
+ * Creating the window
+ * @param widget : the widget to be realized
+ */
 static void gtk_hexa_realize(GtkWidget *widget)
 {
 	GdkWindowAttr attributes;
@@ -103,7 +209,6 @@ static void gtk_hexa_realize(GtkWidget *widget)
 
 	gdk_window_set_user_data(widget->window, widget);
 	gtk_style_set_background(widget->style, widget->window, GTK_STATE_ACTIVE);
-  
 }
 
 /**
@@ -120,29 +225,27 @@ static void gtk_hexa_size_request(GtkWidget *widget, GtkRequisition *requisition
  */
 static void gtk_hexa_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 {
-	GtkHexa *hex;
+	GtkHexa *hexa;
 
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (IS_GTK_HEXA(widget));
 	g_return_if_fail (allocation != NULL);
 
 	widget->allocation = *allocation;
-	
+
 	if (GTK_WIDGET_REALIZED(widget))
 	{
-		hex = GTK_HEXA(widget);
-		gdk_window_move_resize(widget->window, allocation->x, allocation->y, allocation->width, allocation->height);
+		hexa = GTK_HEXA(widget);
+		gdk_window_move_resize(widget->window, allocation->x, allocation->y, allocation->width, allocation->height);	
     }
-	
 }
 
 /**
  * Draws the widget
  */
-static void gtk_hexa_paint(GtkWidget *widget)
+static void gtk_hexa_paint(GtkWidget *widget, GdkRectangle *area)
 {
-	gdk_window_clear_area(widget->window, 0, 0, widget->allocation.width, widget->allocation.height);
-	
+	gdk_window_clear_area(widget->window, area->x, area->y, area->width, area->height);
 }
 
 /**
@@ -160,7 +263,7 @@ static gboolean gtk_hexa_expose(GtkWidget *widget, GdkEventExpose *event)
 	}
 	else
 	{
-		gtk_hexa_paint(widget);
+		gtk_hexa_paint(widget, &event->area);
 	
 		return FALSE;
 	}
