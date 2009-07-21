@@ -122,7 +122,7 @@ int main (int argc, char ** argv)
 	HexWidget = gtk_hexa_new();
 	
 	vbox = glade_xml_get_widget(xml, "hbox1");
-	gtk_box_pack_start(GTK_BOX(vbox), HexWidget, FALSE, FALSE, 2);
+	gtk_box_pack_start(GTK_BOX(vbox), HexWidget, TRUE, TRUE, 2);
 	
 	gtk_widget_show_all(glade_xml_get_widget(xml, "window1"));
 	

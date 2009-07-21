@@ -33,17 +33,18 @@ G_BEGIN_DECLS
 
 #define GTK_TYPE_HEXA	    	(gtk_hexa_get_type ())
 #define GTK_HEXA(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_HEXA, GtkHexa))
-#define IS_GTK_HEXA(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_HEXA))
+#define GTK_IS_HEXA(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_HEXA))
 
-#define GTK_HEXA_CLASS(obj)		(G_TYPE_CHECK_CLASS_CAST ((obj), GTK_HEXA, GtkHexaClass))
-#define IS_GTK_HEXA_CLASS(obj)	(G_TYPE_CHECK_CLASS_TYPE ((obj), GTK_TYPE_HEXA))
-#define GTK_HEXA_GET_CLASS		(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_HEXA, GtkHexaClass))
+#define GTK_HEXA_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_HEXA, GtkHexaClass))
+#define GTK_IS_HEXA_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_HEXA))
+#define GTK_HEXA_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj, GTK_TYPE_HEXA, GtkHexaClass))
 
 #define GTK_HEXA_DEFAULT_WIDTH 200
 #define GTK_HEXA_DEFAULT_HEIGHT 300
 
 typedef struct _GtkHexa			GtkHexa;
 typedef struct _GtkHexaClass	GtkHexaClass;
+typedef struct _GtkHexaPrivate  GtkHexaPrivate;
 
 struct _GtkHexa
 {
@@ -52,8 +53,7 @@ struct _GtkHexa
 	GtkAdjustment *adjustment;
 	gboolean adjustement_changed; /** to know that something has changed */
 	guint policy : 2;             /** update policy (GTK_UPDATE_[CONTINUOUS/DELAYED/DISCONTINUOUS]) */
-  
-	/* < private > */
+ 
 };
 
 struct _GtkHexaClass
@@ -65,6 +65,7 @@ struct _GtkHexaClass
 GType gtk_hexa_get_type (void);
 GtkWidget *gtk_hexa_new (void);
 GtkAdjustment *gtk_hexa_get_adjustment(GtkHexa *hexa);
+void gtk_hexa_set_adjustment (GtkHexa *hexa, GtkAdjustment *adjustment);
 void gtk_hexa_set_update_policy(GtkHexa *hexa, GtkUpdateType policy);
 
 
