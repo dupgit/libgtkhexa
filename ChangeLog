@@ -1,3 +1,8 @@
+23.07.2009
+	- Olivier Delhomme <heraia@delhomme.org>
+	  * Changed from GtkWidget to GtkContainer the parent class as we will
+	    need scrollbars and such. 
+
 23.06.2009
 	- Olivier Delhomme <heraia@delhomme.org>
 	  * Begin before thinking to finish !

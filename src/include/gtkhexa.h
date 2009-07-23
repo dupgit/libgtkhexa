@@ -48,7 +48,7 @@ typedef struct _GtkHexaPrivate  GtkHexaPrivate;
 
 struct _GtkHexa
 {
-	GtkWidget parent;
+	GtkContainer parent;
 
 	GtkAdjustment *adjustment;
 	gboolean adjustement_changed; /** to know that something has changed */

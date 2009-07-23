@@ -41,7 +41,7 @@ static void gtk_hexa_adjustment_changed(GtkAdjustment *adjustment, gpointer data
 static void gtk_hexa_adjustment_value_changed(GtkAdjustment *adjustment, gpointer data);
 
 
-G_DEFINE_TYPE (GtkHexa, gtk_hexa, GTK_TYPE_WIDGET);
+G_DEFINE_TYPE (GtkHexa, gtk_hexa, GTK_TYPE_CONTAINER);
 
 /**
  * Class initialisation
@@ -59,8 +59,8 @@ static void gtk_hexa_class_init(GtkHexaClass *class)
 	
 	widget_class->realize = gtk_hexa_realize;
 	widget_class->expose_event = gtk_hexa_expose;
-	widget_class->size_request = gtk_hexa_size_request;
-	widget_class->size_allocate = gtk_hexa_size_allocate;
+	/* widget_class->size_request = gtk_hexa_size_request;   */
+	/* widget_class->size_allocate = gtk_hexa_size_allocate; */
 }
 
 /**
@@ -68,7 +68,17 @@ static void gtk_hexa_class_init(GtkHexaClass *class)
  */
 static void gtk_hexa_init(GtkHexa *hexa)
 {
+	GtkWidget *scroll = NULL;
+	GtkWidget *vbox = NULL;
+	
 	hexa->adjustment = (GtkAdjustment*) gtk_adjustment_new(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	
+	vbox = gtk_vbox_new(FALSE, 2);
+	scroll = gtk_scrolled_window_new(NULL, NULL);
+	 
+	gtk_container_add(GTK_CONTAINER(hexa), vbox);
+	gtk_box_pack_end(GTK_BOX(vbox), scroll, FALSE, FALSE, 2);
+	
 }
 
 static void gtk_hexa_finalize(GObject *object)
@@ -190,8 +200,8 @@ static void gtk_hexa_realize(GtkWidget *widget)
 	
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (GTK_IS_HEXA(widget));
-
-	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
+	
+    GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
   
 	attributes.x = widget->allocation.x;
 	attributes.y = widget->allocation.y;
@@ -199,17 +209,16 @@ static void gtk_hexa_realize(GtkWidget *widget)
 	attributes.height = widget->allocation.height;
 	attributes.wclass = GDK_INPUT_OUTPUT;
 	attributes.window_type = GDK_WINDOW_CHILD;
-	attributes.event_mask = gtk_widget_get_events(widget) | GDK_EXPOSURE_MASK;
+	attributes.event_mask = GDK_VISIBILITY_NOTIFY_MASK | GDK_EXPOSURE_MASK;
 	attributes.visual = gtk_widget_get_visual(widget);
 	attributes.colormap = gtk_widget_get_colormap(widget);
 
 	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
 	
 	widget->window = gdk_window_new(gtk_widget_get_parent_window(widget), &attributes, attributes_mask);
-	widget->style = gtk_style_attach(widget->style, widget->window);
-
 	gdk_window_set_user_data(widget->window, widget);
-	gtk_style_set_background(widget->style, widget->window, GTK_STATE_ACTIVE);
+	widget->style = gtk_style_attach(widget->style, widget->window);
+    gdk_window_set_background(widget->window, &widget->style->bg[GTK_WIDGET_STATE (widget)]);
 }
 
 /**
@@ -217,8 +226,8 @@ static void gtk_hexa_realize(GtkWidget *widget)
  */
 static void gtk_hexa_size_request(GtkWidget *widget, GtkRequisition *requisition)
 {
-	requisition->width = GTK_HEXA_DEFAULT_WIDTH;
-	requisition->height = GTK_HEXA_DEFAULT_HEIGHT;
+	requisition->width = GTK_HEXA_DEFAULT_WIDTH + GTK_CONTAINER (widget)->border_width * 2;
+	requisition->height = GTK_HEXA_DEFAULT_HEIGHT + GTK_CONTAINER (widget)->border_width * 2;
 }
 
 /**
@@ -248,7 +257,18 @@ static void gtk_hexa_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
  */
 static void gtk_hexa_paint(GtkWidget *widget, GdkRectangle *area)
 {			
-	gtk_paint_box(widget->style, widget->window, GTK_STATE_NORMAL, GTK_SHADOW_OUT, NULL, widget, NULL, 0, 0, widget->allocation.width, widget->allocation.height);	
+
+	gint num_bytes_size = 0;
+	gint hexa_view_size = 0;
+	gint char_view_size = 0;
+	
+	num_bytes_size = (gint) ((widget->allocation.width-10) * 0.10);
+	hexa_view_size = (gint) ((widget->allocation.width-10) * 0.70);
+	char_view_size = (gint) ((widget->allocation.width-10) * 0.30);
+	
+	gtk_paint_box(widget->style, widget->window, GTK_STATE_NORMAL, GTK_SHADOW_OUT, area, widget, NULL, 0, 0, num_bytes_size, widget->allocation.height);
+	gtk_paint_box(widget->style, widget->window, GTK_STATE_NORMAL, GTK_SHADOW_OUT, area, widget, NULL, num_bytes_size + 5, 0, hexa_view_size, widget->allocation.height);	
+	gtk_paint_box(widget->style, widget->window, GTK_STATE_NORMAL, GTK_SHADOW_OUT, area, widget, NULL, num_bytes_size + hexa_view_size + 10, 0, char_view_size, widget->allocation.height);	
 }
 
 /**
