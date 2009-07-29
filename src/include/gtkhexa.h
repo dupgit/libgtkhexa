@@ -58,7 +58,7 @@ struct _GtkHexa
 
 struct _GtkHexaClass
 {
-	GtkWidgetClass parent_class;
+	GtkContainerClass parent_class;
 };
 
 

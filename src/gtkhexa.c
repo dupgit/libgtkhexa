@@ -39,29 +39,49 @@ static void gtk_hexa_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 static void gtk_hexa_update (GtkHexa *hexa);
 static void gtk_hexa_adjustment_changed(GtkAdjustment *adjustment, gpointer data);
 static void gtk_hexa_adjustment_value_changed(GtkAdjustment *adjustment, gpointer data);
-
+static void gtk_hexa_add(GtkContainer *container, GtkWidget *child);
 
 G_DEFINE_TYPE (GtkHexa, gtk_hexa, GTK_TYPE_CONTAINER);
 
 /**
  * Class initialisation
  */
-static void gtk_hexa_class_init(GtkHexaClass *class)
+static void gtk_hexa_class_init(GtkHexaClass *klass)
 {
-	GObjectClass *gobject_class = G_OBJECT_CLASS (class);
-    GtkObjectClass *object_class = GTK_OBJECT_CLASS (class);
-	GtkWidgetClass *widget_class = NULL;
-
+	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
+    GtkObjectClass *object_class = GTK_OBJECT_CLASS(klass);
+    GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
+    GtkContainerClass *container_class = GTK_CONTAINER_CLASS(klass);
+  
 	object_class->destroy = gtk_hexa_destroy;
     gobject_class->finalize = gtk_hexa_finalize;
 
-	widget_class = GTK_WIDGET_CLASS(class);
+	widget_class = GTK_WIDGET_CLASS(klass);
 	
 	widget_class->realize = gtk_hexa_realize;
 	widget_class->expose_event = gtk_hexa_expose;
-	/* widget_class->size_request = gtk_hexa_size_request;   */
-	/* widget_class->size_allocate = gtk_hexa_size_allocate; */
+	widget_class->size_request = gtk_hexa_size_request; 
+	widget_class->size_allocate = gtk_hexa_size_allocate;
+	
+	container_class->add = gtk_hexa_add;	
 }
+
+/**
+ * Container Stuff
+ */
+
+/**
+ * Adds GtkHexa Widget to another one
+ * @param container
+ * @param child
+ * This should add child to container ?
+ */
+static void gtk_hexa_add(GtkContainer *container, GtkWidget *child)
+{
+	
+}
+
+
 
 /**
  * Inits the widget itself
@@ -78,7 +98,7 @@ static void gtk_hexa_init(GtkHexa *hexa)
 	 
 	gtk_container_add(GTK_CONTAINER(hexa), vbox);
 	gtk_box_pack_end(GTK_BOX(vbox), scroll, FALSE, FALSE, 2);
-	
+	gtk_widget_show(scroll);
 }
 
 static void gtk_hexa_finalize(GObject *object)
@@ -262,6 +282,7 @@ static void gtk_hexa_paint(GtkWidget *widget, GdkRectangle *area)
 	gint hexa_view_size = 0;
 	gint char_view_size = 0;
 	
+/*	
 	num_bytes_size = (gint) ((widget->allocation.width-10) * 0.10);
 	hexa_view_size = (gint) ((widget->allocation.width-10) * 0.70);
 	char_view_size = (gint) ((widget->allocation.width-10) * 0.30);
@@ -269,6 +290,7 @@ static void gtk_hexa_paint(GtkWidget *widget, GdkRectangle *area)
 	gtk_paint_box(widget->style, widget->window, GTK_STATE_NORMAL, GTK_SHADOW_OUT, area, widget, NULL, 0, 0, num_bytes_size, widget->allocation.height);
 	gtk_paint_box(widget->style, widget->window, GTK_STATE_NORMAL, GTK_SHADOW_OUT, area, widget, NULL, num_bytes_size + 5, 0, hexa_view_size, widget->allocation.height);	
 	gtk_paint_box(widget->style, widget->window, GTK_STATE_NORMAL, GTK_SHADOW_OUT, area, widget, NULL, num_bytes_size + hexa_view_size + 10, 0, char_view_size, widget->allocation.height);	
+ */
 }
 
 /**
