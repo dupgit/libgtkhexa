@@ -3,7 +3,10 @@ AC_PREREQ(2.59)
 AC_INIT([LIBGTKHEXA], [0.0.1],
         [heraia@delhomme.org],
         [libgtkhexa])
+
 AC_CONFIG_HEADER([config.h])
+AC_CONFIG_SRCDIR([src/gtkhexa.c])
+
 AM_INIT_AUTOMAKE([$PACKAGE_TARNAME], [$PACKAGE_VERSION])
 
 dnl directory requirement
@@ -25,10 +28,15 @@ AC_SUBST(CAIRO_VERSION)
 AC_SUBST(LIBGLADE_VERSION)
 AC_SUBST(GMODULE_VERSION)
 
-AM_MAINTAINER_MODE
+dnl **************************************************
+dnl * Build time sanity check                        *
+dnl **************************************************
+AM_SANITY_CHECK
 
-dnl Put the preprocessor macros in a header instead of command line 
-AC_CONFIG_SRCDIR([src/gtkhexa.c])
+dnl **************************************************
+dnl * Initialize maintainer mode                     *
+dnl **************************************************
+AM_MAINTAINER_MODE
 
 dnl Checks for headers
 AC_HEADER_STDC
@@ -58,14 +66,15 @@ dnl dynamic libraries/plugins
 # AC_LIB_LTDL
 
 dnl Checks for programs
+AC_DISABLE_STATIC
 AM_PROG_LIBTOOL
 
 if test "x$prefix" = "xNONE"; then
-	prefix="/usr/local"
+    prefix="/usr/local"
 fi
 
 if test "x$localstatedir" = "x\${prefix}/var"; then
-	localstatedir="$prefix/var"
+    localstatedir="$prefix/var"
 fi
 
 if test "x$sysconfdir" = "x\${prefix}/etc"; then
@@ -80,23 +89,23 @@ AC_SUBST(sysconfdir)
 dnl **************************************************
 dnl * Check for Gtkdoc.                              *
 dnl **************************************************
-AC_CHECK_PROG(GTKDOC, gtkdoc-mkdb, true, false)
-AM_CONDITIONAL(HAVE_GTK_DOC, test -n $GTKDOC)
-AC_SUBST(HAVE_GTK_DOC)
+dnl AC_CHECK_PROG(GTKDOC, gtkdoc-mkdb, true, false)
+dnl AM_CONDITIONAL(HAVE_GTK_DOC, test -n $GTKDOC)
+dnl AC_SUBST(HAVE_GTK_DOC)
 
-AC_ARG_ENABLE(gtk-doc, [  --enable-gtk-doc  Use gtk-doc to build documentation [default=no]], enable_gtk_doc="$enableval", enable_gtk_doc=no)
-AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
+dnl AC_ARG_ENABLE(gtk-doc, [  --enable-gtk-doc  Use gtk-doc to build documentation [default=no]], enable_gtk_doc="$enableval", enable_gtk_doc=no)
+dnl AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
 
 dnl ********************************************************
 dnl languages
 dnl ********************************************************
-ALL_LINGUAS="en_GB"
+dnl ALL_LINGUAS="en_GB"
 
 dnl ********************************************************
 dnl triggers gettext
 dnl ********************************************************
-AC_PROG_INTLTOOL([0.23])
-GETTEXT_PACKAGE=replace
+# AC_PROG_INTLTOOL([0.23])
+GETTEXT_PACKAGE=libgtkhexa
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,["$GETTEXT_PACKAGE"],[gettext domain])
 AM_GLIB_GNU_GETTEXT
@@ -134,14 +143,14 @@ CFLAGS="$CFLAGS -Wall -Wstrict-prototypes -Wmissing-declarations \
 
 case $host in
     *linux*)
-	AC_DEFINE_UNQUOTED(SYS_LINUX,1,[This is a Linux system])
-	PROGRAM_LOCALE_DIR=[${datadir}/locale]
+        AC_DEFINE_UNQUOTED(SYS_LINUX,1,[This is a Linux system])
+        PROGRAM_LOCALE_DIR=[${datadir}/locale]
         AC_SUBST(PROGRAM_LOCALE_DIR)
-	;;
+        ;;
     *mingw*)
-	AC_DEFINE_UNQUOTED(SYS_MINGW,1,[This is a MinGW system])
-     	AC_DEFINE_UNQUOTED(WINDOWS,1,[This is a Windows system])
-     	AC_DEFINE_UNQUOTED(_WIN32,1,[This is a Windows system])
+        AC_DEFINE_UNQUOTED(SYS_MINGW,1,[This is a MinGW system])
+        AC_DEFINE_UNQUOTED(WINDOWS,1,[This is a Windows system])
+        AC_DEFINE_UNQUOTED(_WIN32,1,[This is a Windows system])
         CFLAGS="$CFLAGS -mms-bitfields -mwindows -mno-cygwin"
         ;;
 esac
@@ -177,12 +186,16 @@ AC_SUBST(LIBGLADE_LIBS)
 AC_SUBST(GMODULE_CFLAGS)
 AC_SUBST(GMODULE_LIBS)
 
-AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile po/Makefile.in])
+AC_CONFIG_FILES([
+Makefile
+src/Makefile
+tests/Makefile
+])
 AC_OUTPUT
 
 echo
 echo "*** Dumping configuration ***"
-echo 
+echo
 echo "    - Host                   : $host"
 echo "    - Compiler               : ${CC}"
 echo "    - Generate documentation : $enable_gtk_doc"
